@@ -88,6 +88,7 @@ if has("win32") || has("dos32") || has("dos16") || has("os2")
 	let s:sessions_path = substitute(s:sessions_path, '\\', '/', 'g') . '/sessions'
 else
 	let s:sessions_path = $HOME . '/.vim/sessions'
+	let s:infos_path = $HOME . '/.vim/viminfos'
 endif
 
 let s:et_save = &et
@@ -115,6 +116,7 @@ function! s:OpenSession(name)
 			execute 'silent! %bwipeout!'
 			let n = bufnr('%')
 			execute 'silent! so ' . s:sessions_path . '/' . a:name
+			execute 'silent! rviminfo ' . s:infos_path . '/' . a:name . '_viminfo'
 			execute 'silent! bwipeout! ' . n
 		finally
 			set eventignore=
@@ -245,9 +247,13 @@ function! s:SaveSessionAs(...)
 		if v:version >= 700 && finddir(s:sessions_path, '/') == ''
 			call mkdir(s:sessions_path, 'p')
 		endif
+		if v:version >= 700 && finddir(s:infos_path, '/') == ''
+			call mkdir(s:infos_path, 'p')
+		endif
 		silent! argdel *
 		let g:LAST_SESSION = name
 		execute 'silent mksession! ' . s:sessions_path . '/' . name
+		execute 'silent wviminfo! ' . s:infos_path. '/' . name . '_viminfo'
 		redraw | echo 'Saved session "' . name . '"'
 	endif
 endfunction
