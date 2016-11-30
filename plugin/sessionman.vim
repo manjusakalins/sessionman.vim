@@ -117,6 +117,10 @@ function! s:OpenSession(name)
 			let n = bufnr('%')
 			execute 'silent! so ' . s:sessions_path . '/' . a:name
 			execute 'silent! rviminfo ' . s:infos_path . '/' . a:name . '_viminfo'
+			if filereadable(s:infos_path . '/' . a:name . '.cscope.out')
+				execute 'cscope add ' . s:infos_path . '/' . a:name . '.cscope.out'
+				execute 'set tag=' . s:infos_path . '/' . a:name . '.tags'
+			endif
 			execute 'silent! bwipeout! ' . n
 		finally
 			set eventignore=
