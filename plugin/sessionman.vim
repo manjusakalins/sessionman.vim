@@ -116,10 +116,10 @@ function! s:OpenSession(name)
 			execute 'silent! %bwipeout!'
 			let n = bufnr('%')
 			execute 'silent! so ' . s:sessions_path . '/' . a:name
-			execute 'silent! rviminfo ' . s:infos_path . '/' . a:name . '_viminfo'
+			execute 'silent! rviminfo ' . s:infos_path . '/' . a:name . '/' . a:name . '_viminfo'
 			if filereadable(s:infos_path . '/' . a:name . '.cscope.out')
-				execute 'cscope add ' . s:infos_path . '/' . a:name . '.cscope.out'
-				execute 'set tag=' . s:infos_path . '/' . a:name . '.tags'
+				execute 'cscope add ' . s:infos_path . '/' . a:name . '/' . a:name . '.cscope.out'
+				execute 'set tag=' . s:infos_path . '/' . a:name . '/' . a:name . '.tags'
 			endif
 			execute 'silent! bwipeout! ' . n
 		finally
@@ -257,7 +257,7 @@ function! s:SaveSessionAs(...)
 		silent! argdel *
 		let g:LAST_SESSION = name
 		execute 'silent mksession! ' . s:sessions_path . '/' . name
-		execute 'silent wviminfo! ' . s:infos_path. '/' . name . '_viminfo'
+		execute 'silent wviminfo! ' . s:infos_path. '/' . name . '/' . name . '_viminfo'
 		redraw | echo 'Saved session "' . name . '"'
 	endif
 endfunction
