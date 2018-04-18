@@ -117,7 +117,7 @@ function! s:OpenSession(name)
 			let n = bufnr('%')
 			execute 'silent! so ' . s:sessions_path . '/' . a:name
 			execute 'silent! rviminfo ' . s:infos_path . '/' . a:name . '/' . a:name . '_viminfo'
-			if filereadable(s:infos_path . '/' . a:name . '.cscope.out')
+			if filereadable(s:infos_path . '/' . a:name . '/' . a:name .'.cscope.out')
 				execute 'cscope add ' . s:infos_path . '/' . a:name . '/' . a:name . '.cscope.out'
 				execute 'set tag=' . s:infos_path . '/' . a:name . '/' . a:name . '.tags'
 			endif
@@ -251,8 +251,9 @@ function! s:SaveSessionAs(...)
 		if v:version >= 700 && finddir(s:sessions_path, '/') == ''
 			call mkdir(s:sessions_path, 'p')
 		endif
-		if v:version >= 700 && finddir(s:infos_path, '/') == ''
+		if v:version >= 700 && finddir(s:infos_path . '/' . name , '/') == ''
 			call mkdir(s:infos_path, 'p')
+			call mkdir(s:infos_path . '/' . name , 'p')
 		endif
 		silent! argdel *
 		let g:LAST_SESSION = name
