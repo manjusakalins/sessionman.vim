@@ -249,10 +249,11 @@ function! s:SaveSessionAs(...)
 	endif
 	if name != ''
 		if v:version >= 700 && finddir(s:sessions_path, '/') == ''
-			call mkdir(s:sessions_path, 'p')
+			"call mkdir(s:sessions_path, 'p')
+			call mkdir(s:infos_path . '/' . name , 'p')
 		endif
 		if v:version >= 700 && finddir(s:infos_path . '/' . name , '/') == ''
-			call mkdir(s:infos_path, 'p')
+			"call mkdir(s:infos_path, 'p')
 			call mkdir(s:infos_path . '/' . name , 'p')
 		endif
 		silent! argdel *
