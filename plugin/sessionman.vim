@@ -260,6 +260,13 @@ function! s:SaveSessionAs(...)
 		let g:LAST_SESSION = name
 		execute 'silent mksession! ' . s:sessions_path . '/' . name
 		execute 'silent wviminfo! ' . s:infos_path. '/' . name . '/' . name . '_viminfo'
+		if filereadable(s:infos_path . '/' . name . '/' . name .'_root_dir')
+		else
+			let s:root_dir = getcwd()
+			echom s:root_dir
+			execute 'silent !echo ' . s:root_dir . '>' . s:infos_path . '/' . name . '/' . name . '_root_dir ' | execute ':redraw!'
+		endif
+
 		redraw | echo 'Saved session "' . name . '"'
 	endif
 endfunction
@@ -290,6 +297,33 @@ endfunction
 
 "============================================================================"
 
+
+function! s:SaveSessionUpdate(...)
+	if a:0 == 0 || a:1 == ''
+		let name = input('Save session as: ', substitute(v:this_session, '.*\(/\|\\\)', '', ''))
+	else
+		let name = a:1
+	endif
+	if name != ''
+		if filereadable(s:infos_path . '/' . name . '/' . name .'_root_dir')
+			let s:root_dir = getcwd()
+			echom s:root_dir
+			echom "sssssss update"
+			echom name
+			execute '!vim_gen_cscopse_ctags_sessionman.sh ' . s:root_dir . ' ' . name 
+		endif
+
+		redraw | echo 'Saved session "' . name . '"'
+	endif
+endfunction
+
+"============================================================================"
+
+function! s:SessionUpdate()
+	call s:SaveSessionUpdate(substitute(v:this_session, '.*\(/\|\\\)', '', ''))
+endfunction
+
+"============================================================================"
 command! -nargs=1 -complete=custom,s:SessionOpenComplete SessionOpen call s:OpenSession(<f-args>)
 command! -nargs=0 SessionOpenLast if exists('g:LAST_SESSION') | call s:OpenSession(g:LAST_SESSION) | endif
 command! -nargs=0 SessionClose call s:CloseSession()
@@ -297,6 +331,7 @@ command! -nargs=0 SessionList call s:ListSessions()
 command! -nargs=0 SessionSave call s:SaveSession()
 command! -nargs=? SessionSaveAs call s:SaveSessionAs(<f-args>)
 command! -nargs=0 SessionShowLast call s:ShowLastSession()
+command! -nargs=0 SessionUpdate call s:SessionUpdate()
 
 "============================================================================"
 
@@ -314,4 +349,3 @@ aug END
 let &cpo = s:cpo_save
 unlet s:cpo_save
 
-" vim: set ts=4 sw=4 noet :
